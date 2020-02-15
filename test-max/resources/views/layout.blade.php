@@ -10,12 +10,8 @@
 <body>
     <div id="app">
         <menu-component></menu-component>
-        
-        {{-- <example-component></example-component> --}}
-        <router-view></router-view>
-        {{-- <my-table-component></my-table-component> --}}
+        <router-view :tasks="{{json_encode($tasks)}}"></router-view>
     </div>
-
     <script src="js/app.js"></script>
 </body>
 </html>

@@ -8,12 +8,15 @@ require('./bootstrap');
 
 window.Vue = require('vue');
 import VueRouter from 'vue-router'
-// var VueRouter = require('vue-router');
-// const VueRouter = require('vue-router').default;
+import VueSimpleAlert from "vue-simple-alert";
+import axios from 'axios'
+import VueAxios from 'vue-axios'
+ 
 
 
 Vue.use(VueRouter);
-
+Vue.use(VueSimpleAlert);
+Vue.use(VueAxios, axios);
 
 
 /**
@@ -46,6 +49,7 @@ Vue.component('home-component', HomeComponent );
  */
 const router = new VueRouter({
     routes: [
+        {path: '/', redirect: '/Home', component: HomeComponent},
         { path: '/Home', component: HomeComponent },
         { path: '/Arhive', component: MyTableComponent }
     ]
@@ -54,5 +58,5 @@ const router = new VueRouter({
 
 const app = new Vue({
     el: '#app',
-    router: router 
+    router: router,
 });

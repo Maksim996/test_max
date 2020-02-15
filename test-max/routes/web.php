@@ -14,4 +14,5 @@
 // Route::get('/', function () {
 //     return view('welcome');
 // });
-Route::get('/', 'TableTaskController@index');
+Route::get('/', 'TaskController@index');
+Route::delete('/delete/{id}', 'TaskController@delete');
