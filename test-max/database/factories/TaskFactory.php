@@ -10,8 +10,8 @@ $factory->define(Task::class, function (Faker $faker) {
     return [
         //
         'name_task' => $faker->name,
-        'start_time' => Carbon::now(),
-        'end_time' => Carbon::now(),
-        'sum_time' => Carbon::now()
+        'start_time' => $faker->dateTimeBetween('-3 years', 'now'),
+        'end_time' => $faker->dateTimeBetween('-3 years', 'now'),
+        'time' => $faker->time($format = 'H:i:s', $max = 'now')
     ];
 });

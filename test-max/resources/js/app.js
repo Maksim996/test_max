@@ -17,7 +17,7 @@ import VueAxios from 'vue-axios'
 Vue.use(VueRouter);
 Vue.use(VueSimpleAlert);
 Vue.use(VueAxios, axios);
-
+Vue.use(require('vue-moment'));
 
 /**
  * The following block of code may be used to automatically register your

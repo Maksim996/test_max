@@ -13,6 +13,6 @@ class Task extends Model
         'name_task',
         'start_time',
         'end_time',
-        'sum_time'
+        'time'
     ];
 }

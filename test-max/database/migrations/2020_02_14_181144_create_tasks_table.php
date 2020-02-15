@@ -18,7 +18,7 @@ class CreateTasksTable extends Migration
             $table->text('name_task');
             $table->dateTime('start_time');
             $table->dateTime('end_time');
-            $table->dateTime('sum_time');
+            $table->time('time');
             $table->timestamps();
         });
     }
