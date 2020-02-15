@@ -10,7 +10,7 @@
 <body>
     <div id="app">
         <menu-component></menu-component>
-        <router-view :tasks="{{json_encode($tasks)}}"></router-view>
+        <router-view></router-view>
     </div>
     <script src="js/app.js"></script>
 </body>

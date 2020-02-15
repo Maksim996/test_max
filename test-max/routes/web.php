@@ -11,8 +11,6 @@
 |
 */
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
-Route::get('/', 'TaskController@index');
-Route::delete('/delete/{id}', 'TaskController@delete');
+Route::get('/', function () {
+    return view('layout');
+});

@@ -4965,6 +4965,18 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['tasks'],
   mounted: function mounted() {
@@ -5000,9 +5012,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-/* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['tasks']
-});
+/* harmony default export */ __webpack_exports__["default"] = ({});
 
 /***/ }),
 
@@ -5058,33 +5068,39 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      info: null
+      tasks: {}
     };
   },
-  props: ['tasks'],
   mounted: function mounted() {},
+  created: function created() {
+    this.getApp();
+  },
   methods: {
-    del: function del(index) {
-      // this.arr.splice(index, 1)
-      Vue["delete"](this.tasks, index);
-    },
-    deleteTask: function deleteTask(name, id, index) {
+    getApp: function getApp() {
       var _this = this;
 
+      axios.get("api/").then(function (response) {
+        _this.tasks = response.data;
+      });
+    },
+    deleteTask: function deleteTask(name, id, index) {
+      var _this2 = this;
+
       this.$confirm("Do you want delete " + name + " task ?").then(function () {
-        axios["delete"]('delete/' + id) // .then(() => this.tasks.splice(index, 1))
-        .then(function () {
-          _this.del(index); // this.tasks.splice(index, 1)
-          // this.$delete(this.tasks, index)
+        axios["delete"]('api/delete/' + id).then(function () {
+          _this2.$delete(_this2.tasks, index);
 
-
-          console.log(_this.tasks);
-          console.log(index);
-        } //     this.tasks.splice(index - 1, 1);
-        )["catch"](function (e) {}); // .then(this.$alert("Hello Vue Simple Alert."))
+          _this2.$alert("Successfully deleted");
+        })["catch"](function (e) {});
       })["catch"](function (e) {});
     }
   }
@@ -40464,11 +40480,38 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "div",
-    [_c("my-table-component", { attrs: { tasks: _vm.tasks } })],
+    { staticClass: "container mt-3" },
+    [
+      _vm._m(0),
+      _vm._v(" "),
+      _c("my-table-component", { attrs: { tasks: _vm.tasks } })
+    ],
     1
   )
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "col-lg-6" }, [
+        _c("div", { staticClass: "form-group" }, [
+          _c("label", { attrs: { for: "nameTask" } }, [_vm._v("Name task")]),
+          _vm._v(" "),
+          _c("input", {
+            staticClass: "form-control",
+            attrs: { type: "input", id: "nameTask", placeholder: "Name task" }
+          })
+        ])
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "col-lg-6" }, [
+        _c("button", { attrs: { type: "button" } }, [_vm._v("Start")])
+      ])
+    ])
+  }
+]
 render._withStripped = true
 
 
@@ -40490,7 +40533,7 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "container" }, [
+  return _c("div", { staticClass: "container mt-1" }, [
     _c("ul", { staticClass: "nav  nav-pills justify-content-end" }, [
       _c(
         "li",
@@ -40499,11 +40542,8 @@ var render = function() {
           _c(
             "router-link",
             {
-              staticClass: "nav-link",
-              attrs: {
-                "active-class": "active",
-                to: { path: "/Home", props: { tasks: _vm.tasks } }
-              }
+              staticClass: "nav-link mr-2",
+              attrs: { "active-class": "active", to: { path: "/Home" } }
             },
             [_vm._v("Home")]
           )
@@ -40519,10 +40559,7 @@ var render = function() {
             "router-link",
             {
               staticClass: "nav-link",
-              attrs: {
-                "active-class": "active",
-                to: { path: "/Arhive", props: { tasks: _vm.tasks } }
-              }
+              attrs: { "active-class": "active", to: { path: "/Arhive" } }
             },
             [_vm._v("Arhive")]
           )
@@ -40554,7 +40591,7 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "container" }, [
+  return _c("div", { staticClass: "container mt-4" }, [
     _c("table", { staticClass: "table" }, [
       _vm._m(0),
       _vm._v(" "),
@@ -40618,7 +40655,9 @@ var render = function() {
           ])
         }),
         0
-      )
+      ),
+      _vm._v(" "),
+      _vm._m(1)
     ]),
     _vm._v("\n  " + _vm._s(_vm.info) + "\n")
   ])
@@ -40641,6 +40680,18 @@ var staticRenderFns = [
         _c("th", { attrs: { scope: "col" } }, [_vm._v("Sum time")]),
         _vm._v(" "),
         _c("th", { attrs: { scope: "col" } }, [_vm._v("Active")])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("tfoot", [
+      _c("tr", [
+        _c("td", [_vm._v("Sum")]),
+        _vm._v(" "),
+        _c("td", [_vm._v("$180")])
       ])
     ])
   }

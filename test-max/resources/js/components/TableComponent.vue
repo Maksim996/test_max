@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container mt-4">
     <table class="table">
         <thead>
             <tr>
@@ -36,6 +36,12 @@
             </tr>
             
         </tbody>
+        <tfoot>
+            <tr>
+            <td>Sum</td>
+            <td>$180</td>
+            </tr>
+        </tfoot>
     </table>
     {{ info }}
   </div>
@@ -43,38 +49,30 @@
 
 <script>
     export default {
-         data() {
+        data() {
             return {
-                info: null
+                tasks: {},
             };
         },
-        props: [
-            'tasks'
-        ],
-        
         mounted() {
+            
+        },
+        created() {
+            this.getApp();
         },
         methods: {
-            del: function (index) {
-            // this.arr.splice(index, 1)
-                Vue.delete(this.tasks, index)
-            },
+            getApp : function() {
+                axios.get("api/").then(response => {
+                this.tasks = response.data
+            })},
             deleteTask: function(name, id, index) {
                 this.$confirm("Do you want delete " + name + " task ?").then(()=>{
                     axios
-                    .delete('delete/' + id)
-                    // .then(() => this.tasks.splice(index, 1))
+                    .delete('api/delete/' + id)
                     .then( ()=>{
-                        this.del(index);
-                        // this.tasks.splice(index, 1)
-                        // this.$delete(this.tasks, index)
-                        console.log(this.tasks)
-                        console.log(index);
-                    }
-                    //     this.tasks.splice(index - 1, 1);
-                        
-                    ).catch(e => {});
-                    // .then(this.$alert("Hello Vue Simple Alert."))
+                        this.$delete(this.tasks, index);
+                        this.$alert("Successfully deleted")
+                    }).catch(e => {});
                 }).catch(e => {});
             }
         },

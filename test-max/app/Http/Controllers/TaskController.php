@@ -7,17 +7,9 @@ use App\Task;
 
 class TaskController extends Controller
 {
-    //
     public function index(){
-
-        // $arr = [
-        //     'name' => 'maks',
-        //     'id' => 1
-        // ];
         $tasks = Task::all();
-        return view('layout', [
-            'tasks' => $tasks
-        ]);
+        return response()->json($tasks);
     }
     public function delete($id){
         Task::find($id)->delete();
