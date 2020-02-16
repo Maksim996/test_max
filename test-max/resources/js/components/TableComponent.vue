@@ -12,7 +12,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr v-for ="( task, index ) in tasks" :key="task.id">
+            <tr v-for ="( task, index ) in displayedTasks" :key="task.id">
                 <td>
                     {{ task.id }}
                 </td>
@@ -44,37 +44,61 @@
             </tr>
         </tfoot>
     </table>
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            <li class="page-item">
+                 <button type="button" class="page-link" v-if="pagination.page != 1" @click="pagination.page--"> Previous </button>
+            </li>
+            <li class="page-item d-flex">
+                <button type="button" class="page-link" v-for="pageNumber in pagination.pages.slice(pagination.page-1, pagination.page+1)" @click="pagination.page = pageNumber"> {{pageNumber}} </button>
+            </li>
+            <li lass="page-item">
+                <button type="button" @click="pagination.page++" v-if="pagination.page < pagination.pages.length" class="page-link"> Next </button>
+            </li>
+        </ul>
+    </nav>	
   </div>
 </template>
-
 <script>
     export default {
         data() {
             return {
                 tasks: [],
-                sum: '20:00'
+                sum: '00:00:00',
+                pagination: {
+                    page: 1,
+                    perPage: process.env.MIX_PAGINATION_CURRENT,
+                    pages: [],
+                },
             };
         },
         mounted() {
             
         },
         created() {
-            this.getApp();
+            this.getTasks();
         },
         methods: {
-            getApp : function() {
+            getTasks : function() {
                 axios.get("api/").then(response => {
                 this.tasks = response.data;
                 this.getSum();
             }).catch(e => {}) },
             deleteTask: function(name, id, index) {
+                let indexTask; 
+                this.tasks.forEach(function callback(task, i){
+                    if(task.id === id){
+                        indexTask = i
+                    }
+                })
                 this.$confirm("Do you want delete " + name + " task ?").then(()=>{
                     axios
                     .delete('api/delete/' + id)
                     .then( ()=>{
-                        this.$delete(this.tasks, index);
-                        this.$alert("Successfully deleted");
                         this.getSum();
+                        this.tasks.splice(indexTask, 1);
+                        this.$alert("Successfully deleted");
+
                     }).catch(e => {});
                 }).catch(e => {});
             },
@@ -105,12 +129,35 @@
                         return num(hours) + ":" + num(minutes) + ":" + num(seconds);
                     };
                 })();
-                
-
                 this.sum = timeFormat(time*1000);
             },
-           
+
+            // pagination
+            setPages () {
+			    let numberOfPages = Math.ceil(this.tasks.length / this.pagination.perPage);
+                for (let index = 1; index <= numberOfPages; index++) {
+                    this.pagination.pages.push(index);
+                }
+            },
+            paginate (tasks) {
+                let page = this.pagination.page;
+                let perPage = this.pagination.perPage;
+                let from = (page * perPage) - perPage;
+                let to = (page * perPage);
+                return  tasks.slice(from, to);
+            }
 
         },
+        computed: {
+            displayedTasks () {
+                return this.paginate(this.tasks);
+            }
+        },
+        watch: {
+            tasks () {
+                this.setPages();
+            }
+        },
+       
     }
 </script>

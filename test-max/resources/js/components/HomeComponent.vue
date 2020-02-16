@@ -12,9 +12,9 @@
             </div>
         </div>      
 
-
-        <my-table-component></my-table-component>
-
+        <div class="row">    
+            <my-table-component></my-table-component>
+        </div>
     </div>
 </template>
 <script>

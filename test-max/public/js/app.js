@@ -5064,19 +5064,36 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       tasks: [],
-      sum: '20:00'
+      sum: '00:00:00',
+      pagination: {
+        page: 1,
+        perPage: "5",
+        pages: []
+      }
     };
   },
   mounted: function mounted() {},
   created: function created() {
-    this.getApp();
+    this.getTasks();
   },
   methods: {
-    getApp: function getApp() {
+    getTasks: function getTasks() {
       var _this = this;
 
       axios.get("api/").then(function (response) {
@@ -5088,13 +5105,19 @@ __webpack_require__.r(__webpack_exports__);
     deleteTask: function deleteTask(name, id, index) {
       var _this2 = this;
 
+      var indexTask;
+      this.tasks.forEach(function callback(task, i) {
+        if (task.id === id) {
+          indexTask = i;
+        }
+      });
       this.$confirm("Do you want delete " + name + " task ?").then(function () {
         axios["delete"]('api/delete/' + id).then(function () {
-          _this2.$delete(_this2.tasks, index);
+          _this2.getSum();
+
+          _this2.tasks.splice(indexTask, 1);
 
           _this2.$alert("Successfully deleted");
-
-          _this2.getSum();
         })["catch"](function (e) {});
       })["catch"](function (e) {});
     },
@@ -5127,6 +5150,31 @@ __webpack_require__.r(__webpack_exports__);
       }();
 
       this.sum = timeFormat(time * 1000);
+    },
+    // pagination
+    setPages: function setPages() {
+      var numberOfPages = Math.ceil(this.tasks.length / this.pagination.perPage);
+
+      for (var index = 1; index <= numberOfPages; index++) {
+        this.pagination.pages.push(index);
+      }
+    },
+    paginate: function paginate(tasks) {
+      var page = this.pagination.page;
+      var perPage = this.pagination.perPage;
+      var from = page * perPage - perPage;
+      var to = page * perPage;
+      return tasks.slice(from, to);
+    }
+  },
+  computed: {
+    displayedTasks: function displayedTasks() {
+      return this.paginate(this.tasks);
+    }
+  },
+  watch: {
+    tasks: function tasks() {
+      this.setPages();
     }
   }
 });
@@ -40503,12 +40551,11 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    { staticClass: "container mt-3" },
-    [_vm._m(0), _vm._v(" "), _c("my-table-component")],
-    1
-  )
+  return _c("div", { staticClass: "container mt-3" }, [
+    _vm._m(0),
+    _vm._v(" "),
+    _c("div", { staticClass: "row" }, [_c("my-table-component")], 1)
+  ])
 }
 var staticRenderFns = [
   function() {
@@ -40618,7 +40665,7 @@ var render = function() {
       _vm._v(" "),
       _c(
         "tbody",
-        _vm._l(_vm.tasks, function(task, index) {
+        _vm._l(_vm.displayedTasks, function(task, index) {
           return _c("tr", { key: task.id }, [
             _c("td", [
               _vm._v(
@@ -40687,6 +40734,73 @@ var render = function() {
           _vm._m(1),
           _vm._v(" "),
           _c("td", { attrs: { colspan: "2" } }, [_vm._v(_vm._s(_vm.sum))])
+        ])
+      ])
+    ]),
+    _vm._v(" "),
+    _c("nav", { attrs: { "aria-label": "Page navigation example" } }, [
+      _c("ul", { staticClass: "pagination" }, [
+        _c("li", { staticClass: "page-item" }, [
+          _vm.pagination.page != 1
+            ? _c(
+                "button",
+                {
+                  staticClass: "page-link",
+                  attrs: { type: "button" },
+                  on: {
+                    click: function($event) {
+                      _vm.pagination.page--
+                    }
+                  }
+                },
+                [_vm._v(" Previous ")]
+              )
+            : _vm._e()
+        ]),
+        _vm._v(" "),
+        _c(
+          "li",
+          { staticClass: "page-item d-flex" },
+          _vm._l(
+            _vm.pagination.pages.slice(
+              _vm.pagination.page - 1,
+              _vm.pagination.page + 1
+            ),
+            function(pageNumber) {
+              return _c(
+                "button",
+                {
+                  staticClass: "page-link",
+                  attrs: { type: "button" },
+                  on: {
+                    click: function($event) {
+                      _vm.pagination.page = pageNumber
+                    }
+                  }
+                },
+                [_vm._v(" " + _vm._s(pageNumber) + " ")]
+              )
+            }
+          ),
+          0
+        ),
+        _vm._v(" "),
+        _c("li", { attrs: { lass: "page-item" } }, [
+          _vm.pagination.page < _vm.pagination.pages.length
+            ? _c(
+                "button",
+                {
+                  staticClass: "page-link",
+                  attrs: { type: "button" },
+                  on: {
+                    click: function($event) {
+                      _vm.pagination.page++
+                    }
+                  }
+                },
+                [_vm._v(" Next ")]
+              )
+            : _vm._e()
         ])
       ])
     ])
