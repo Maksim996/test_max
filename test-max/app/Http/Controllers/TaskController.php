@@ -18,7 +18,10 @@ class TaskController extends Controller
     public function save(Request $request){
         $task = new Task;
         $task->name_task = $request->message;
-        $task->start_time = Carbon::now();
+        $task->start_time = $request->startTime;
+        $task->end_time = $request->endTime;
+        $task->time = $request->time;
+
         $task->save();
     }
 }

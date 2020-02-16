@@ -4983,11 +4983,25 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       isActiveBtn: false,
-      message: ''
+      message: '',
+      startTime: '',
+      // secondomer
+      time: '00:00:00',
+      seconds: 0,
+      minutes: 0,
+      hours: 0,
+      t: ''
     };
   },
   methods: {
@@ -4997,19 +5011,64 @@ __webpack_require__.r(__webpack_exports__);
       } else {
         if (this.isActiveBtn) {
           this.isActiveBtn = false;
+          this.addTask(this.message, this.startTime, this.$moment().format('YYYY-MM-DD h:mm:ss'), this.time);
           this.message = '';
+          this.stop();
+          this.clear();
         } else {
           this.isActiveBtn = true;
-          this.addTask(this.message);
+          this.startTime = this.$moment().format('YYYY-MM-DD h:mm:ss');
+          this.start();
         }
       }
     },
-    addTask: function addTask(message) {
+    addTask: function addTask(message, startTime, endTime, time) {
       axios.post('api/save', {
-        message: this.message
+        message: message,
+        startTime: startTime,
+        endTime: endTime,
+        time: time
       }).then(function (res) {
-        console.log('otpravilo'); // this.quotes[index].quote_id = res.data.quote_id
+        console.log('otpravilo');
       });
+    },
+    //secondomer 
+    addTime: function addTime() {
+      this.seconds++;
+
+      if (this.seconds >= 60) {
+        this.seconds = 0;
+        this.minutes++;
+
+        if (this.minutes >= 60) {
+          this.minutes = 0;
+          this.hours++;
+        }
+      }
+
+      this.time = (this.hours ? this.hours > 9 ? this.hours : "0" + this.hours : "00") + ":" + (this.minutes ? this.minutes > 9 ? this.minutes : "0" + this.minutes : "00") + ":" + (this.seconds > 9 ? this.seconds : "0" + this.seconds);
+      this.timer();
+    },
+    timer: function timer() {
+      this.t = setTimeout(this.addTime, 1000);
+    },
+
+    /* Start time */
+    start: function start() {
+      this.timer();
+    },
+
+    /* Stop time  */
+    stop: function stop() {
+      clearTimeout(this.t);
+    },
+
+    /* Clear time  */
+    clear: function clear() {
+      this.time = "00:00:00";
+      this.seconds = 0;
+      this.minutes = 0;
+      this.hours = 0;
     }
   }
 });
@@ -40619,11 +40678,13 @@ var render = function() {
         ])
       ]),
       _vm._v(" "),
-      _c("div", { staticClass: "col-lg-6" }, [
+      _c("div", { staticClass: "col-lg-6 d-flex align-items-center" }, [
+        _c("h1", { staticClass: "mb-0" }, [_vm._v(_vm._s(_vm.time))]),
+        _vm._v(" "),
         _c(
           "button",
           {
-            staticClass: "btn",
+            staticClass: "btn ml-3",
             class: _vm.isActiveBtn
               ? "btn-outline-danger"
               : "btn-outline-success",
