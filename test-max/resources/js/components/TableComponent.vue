@@ -70,6 +70,7 @@
                     perPage: process.env.MIX_PAGINATION_CURRENT,
                     pages: [],
                 },
+                per: process.env.MIX_PAGINATION_CURRENT,
             };
         },
         mounted() {
@@ -85,18 +86,19 @@
                 this.getSum();
             }).catch(e => {}) },
             deleteTask: function(name, id, index) {
-                let indexTask; 
-                this.tasks.forEach(function callback(task, i){
-                    if(task.id === id){
-                        indexTask = i
-                    }
-                })
+               
                 this.$confirm("Do you want delete " + name + " task ?").then(()=>{
                     axios
                     .delete('api/delete/' + id)
                     .then( ()=>{
-                        this.getSum();
+                        let indexTask; 
+                        this.tasks.forEach(function callback(task, i){
+                            if(task.id === id){
+                                indexTask = i
+                            }
+                        })
                         this.tasks.splice(indexTask, 1);
+                        this.getSum();
                         this.$alert("Successfully deleted");
 
                     }).catch(e => {});

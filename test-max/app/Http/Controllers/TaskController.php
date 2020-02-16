@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Task;
+use Carbon\Carbon;
 
 class TaskController extends Controller
 {
@@ -13,5 +14,11 @@ class TaskController extends Controller
     }
     public function delete($id){
         Task::find($id)->delete();
+    }
+    public function save(Request $request){
+        $task = new Task;
+        $task->name_task = $request->message;
+        $task->start_time = Carbon::now();
+        $task->save();
     }
 }

@@ -4977,7 +4977,42 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-/* harmony default export */ __webpack_exports__["default"] = ({});
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      isActiveBtn: false,
+      message: ''
+    };
+  },
+  methods: {
+    toggleBtn: function toggleBtn() {
+      if (this.message.length === 0) {
+        this.$alert('Pls input name task');
+      } else {
+        if (this.isActiveBtn) {
+          this.isActiveBtn = false;
+          this.message = '';
+        } else {
+          this.isActiveBtn = true;
+          this.addTask(this.message);
+        }
+      }
+    },
+    addTask: function addTask(message) {
+      axios.post('api/save', {
+        message: this.message
+      }).then(function (res) {
+        console.log('otpravilo'); // this.quotes[index].quote_id = res.data.quote_id
+      });
+    }
+  }
+});
 
 /***/ }),
 
@@ -5085,7 +5120,8 @@ __webpack_require__.r(__webpack_exports__);
         page: 1,
         perPage: "5",
         pages: []
-      }
+      },
+      per: "5"
     };
   },
   mounted: function mounted() {},
@@ -5105,17 +5141,19 @@ __webpack_require__.r(__webpack_exports__);
     deleteTask: function deleteTask(name, id, index) {
       var _this2 = this;
 
-      var indexTask;
-      this.tasks.forEach(function callback(task, i) {
-        if (task.id === id) {
-          indexTask = i;
-        }
-      });
       this.$confirm("Do you want delete " + name + " task ?").then(function () {
         axios["delete"]('api/delete/' + id).then(function () {
-          _this2.getSum();
+          var indexTask;
+
+          _this2.tasks.forEach(function callback(task, i) {
+            if (task.id === id) {
+              indexTask = i;
+            }
+          });
 
           _this2.tasks.splice(indexTask, 1);
+
+          _this2.getSum();
 
           _this2.$alert("Successfully deleted");
         })["catch"](function (e) {});
@@ -40552,34 +40590,70 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container mt-3" }, [
-    _vm._m(0),
-    _vm._v(" "),
-    _c("div", { staticClass: "row" }, [_c("my-table-component")], 1)
-  ])
-}
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "row" }, [
+    _c("div", { staticClass: "row" }, [
       _c("div", { staticClass: "col-lg-6" }, [
         _c("div", { staticClass: "form-group" }, [
           _c("label", { attrs: { for: "nameTask" } }, [_vm._v("Name task")]),
           _vm._v(" "),
           _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.message,
+                expression: "message"
+              }
+            ],
             staticClass: "form-control",
-            attrs: { type: "input", id: "nameTask", placeholder: "Name task" }
+            attrs: { type: "input", id: "nameTask", placeholder: "Name task" },
+            domProps: { value: _vm.message },
+            on: {
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.message = $event.target.value
+              }
+            }
           })
         ])
       ]),
       _vm._v(" "),
       _c("div", { staticClass: "col-lg-6" }, [
-        _c("button", { attrs: { type: "button" } }, [_vm._v("Start")])
+        _c(
+          "button",
+          {
+            staticClass: "btn",
+            class: _vm.isActiveBtn
+              ? "btn-outline-danger"
+              : "btn-outline-success",
+            attrs: { type: "button" },
+            on: {
+              click: function($event) {
+                return _vm.toggleBtn()
+              }
+            }
+          },
+          [
+            _vm._v(
+              "\n                " +
+                _vm._s(_vm.isActiveBtn ? "Stop" : "Start") +
+                "\n            "
+            )
+          ]
+        )
       ])
-    ])
-  }
-]
+    ]),
+    _vm._v(" "),
+    _c(
+      "div",
+      { staticClass: "row" },
+      [_c("my-table-component", { attrs: { message: _vm.message } })],
+      1
+    )
+  ])
+}
+var staticRenderFns = []
 render._withStripped = true
 
 

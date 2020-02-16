@@ -18,3 +18,4 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 Route::get('/', 'TaskController@index');
 Route::delete('/delete/{id}', 'TaskController@delete');
+Route::post('/save', 'TaskController@save');
